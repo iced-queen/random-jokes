@@ -102,10 +102,26 @@ async function matchJoke(search = null) {
 async function getRandomJoke(blacklist = []) {
     if (Array.isArray(blacklist) && !blacklist.length) {
         const j = await get(v2jokeapi.any)
-
-        return {
-            safe: j.safe,
-            joke: j.joke,
+        console.log(j)
+        if (j.type === 'twopart') {
+            return {
+                category: j.category,
+                type: j.type,
+                safe: j.safe,
+                joke: {
+                    setup: j.setup,
+                    delivery: j.delivery,
+                },
+                flags: j.flags,
+            }
+        } else {
+            return {
+                category: j.category,
+                type: j.type,
+                safe: j.safe,
+                joke: j.joke,
+                flags: j.flags,
+            }
         }
     } else {
         validateOptions('joke', blacklist)
@@ -113,16 +129,32 @@ async function getRandomJoke(blacklist = []) {
         let toreplace
 
         if (Array.isArray(blacklist)) {
-            toreplace = blacklist.join(", ")
+            toreplace = blacklist.join(",")
         } else {
             toreplace = blacklist
         }
 
         const j = await get(v2jokeapi.blacklists.replace('{arraylist}', toreplace))
-
-        return {
-            safe: j.safe,
-            joke: j.joke,
+        console.log(j)
+        if (j.type === 'twopart') {
+            return {
+                category: j.category,
+                type: j.type,
+                safe: j.safe,
+                joke: {
+                    setup: j.setup,
+                    delivery: j.delivery,
+                },
+                flags: j.flags,
+            }
+        } else {
+            return {
+                category: j.category,
+                type: j.type,
+                safe: j.safe,
+                joke: j.joke,
+                flags: j.flags,
+            }
         }
     }
 }
